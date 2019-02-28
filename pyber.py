@@ -24,28 +24,37 @@ new_df.head()
 new_df.to_csv("new_data.csv", encoding='utf-8', index=False)
 
 #bubble plot of ride sharing data
-# Obtain the x and y coordinates for each of the three city types
-x_urban = np.arange(0,len(new_df["type"] =="Urban"))
-x_suburban = np.arange(0,len(new_df["type"]=="Suburban"))
-x_rural= np.arange(0,len(new_df["type"]=="Rural"))
-y_axis = new_df["fare"]
-# marker_size = new_df.groupby(["type"])["driver_count"].sum()
+x_urban = new_df[new_df["type"] =="Urban"]
+x_urban_rides = x_urban.groupby(["city"]).count()["ride_id"]
+x_urban_fare = x_urban.groupby(["city"]).mean()["fare"]
+x_urban_drivers = x_urban.groupby(["city"]).count()["driver_count"]
 
-plt.scatter(x_urban,y_axis, marker="o",color="#FED728",label="Urban")
-plt.scatter(x_suburban,y_axis, marker="o",color="#89CEF9",label="Suburban")
-plt.scatter(x_rural,y_axis, marker="o",color="#EF8180",label="Rural")
+x_suburban = new_df[new_df["type"] =="Suburban"]
+x_suburban_rides = x_suburban.groupby(["city"]).count()["ride_id"]
+x_suburban_fare = x_suburban.groupby(["city"]).mean()["fare"]
+x_suburban_drivers = x_suburban.groupby(["city"]).count()["driver_count"]
+
+x_rural = new_df[new_df["type"] =="Rural"]
+x_rural_rides = x_rural.groupby(["city"]).count()["ride_id"]
+x_rural_fare = x_rural.groupby(["city"]).mean()["fare"]
+x_rural_drivers = x_rural.groupby(["city"]).count()["driver_count"]
+
+plt.scatter(x_urban_rides,x_urban_fare, s=10*x_urban_drivers, marker="o",color="#FED728",label="Urban")
+plt.scatter(x_suburban_rides,x_suburban_fare,s=10*x_suburban_drivers, marker="o",color="#89CEF9",label="Suburban")
+plt.scatter(x_rural_rides,x_rural_fare,s=10*x_rural_drivers, marker="o",color="#EF8180",label="Rural")
 
 # Incorporate the other graph properties
 plt.xlabel("Total Number of Rides(Per city)")
 plt.ylabel("Average Fare ($)")
 plt.title("Pyber Ride Sharing Data 2016") 
 plt.xlim(0,40)
-plt.ylim(0,40)
+plt.ylim(20,40)
 # Create a legend
 plt.legend(loc="upper right")
 # Incorporate a text label regarding circle size
 plt.text(41, 25,"Note:")
 plt.text(41, 22,"Circle size correlates with driver count per city.")
+plt.grid(True)
 # Show Figure
 plt.show()
 # Save Figure
